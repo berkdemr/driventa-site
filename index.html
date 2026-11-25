@@ -3,178 +3,431 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Driventa İşletme – Filo Paneli</title>
-<meta name="robots" content="noindex">
+<title>Driventa – Araç Masraf ve Bakım Takibi | Bireysel ve Filo</title>
+<meta name="description" content="Driventa ile aracının yakıt, bakım, sigorta, muayene ve tüm masraflarını tek yerden takip et. İşletmeler için şoför ve yönetici destekli filo takibi.">
 <meta name="theme-color" content="#101B32">
+<meta property="og:title" content="Driventa – Araç Masraf ve Bakım Takibi">
+<meta property="og:description" content="Yakıt, bakım, sigorta ve muayene takibi. Bireysel kullanıcılar ve filolar için.">
+<meta property="og:image" content="assets/icon-512.png">
+<meta property="og:locale" content="tr_TR">
 <link rel="icon" type="image/png" href="assets/favicon.png">
 <style>
 :root{
   --bg:#101B32; --bg-2:#0C1528; --card:#1C2B46; --card-2:#233554; --line:#2A3C5C;
-  --accent:#FF8A32; --accent-soft:rgba(255,138,50,.12);
-  --text:#FFFFFF; --text-2:#A9B6CC; --success:#35C98A; --error:#FF6B6B;
+  --accent:#FF8A32; --accent-2:#FF6B1A; --accent-soft:rgba(255,138,50,.12);
+  --text:#FFFFFF; --text-2:#A9B6CC; --success:#35C98A;
+  --max:1140px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%}
-body{background:var(--bg);color:var(--text);font-family:Inter,Roboto,"Segoe UI",system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
-button,input,select{font:inherit;color:inherit}
-button{cursor:pointer;border:0;background:none}
-svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
-.hidden{display:none!important}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:Inter,Roboto,"Segoe UI",system-ui,-apple-system,sans-serif;line-height:1.55;font-size:16px;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
+svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
 
-/* Buttons & inputs */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 20px;border-radius:12px;font-weight:600;font-size:14.5px;transition:filter .15s}
+/* NAV */
+.nav{position:sticky;top:0;z-index:20;background:rgba(16,27,50,.86);backdrop-filter:blur(12px);border-bottom:1px solid rgba(42,60,92,.6)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:70px;gap:20px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px;letter-spacing:.2px}
+.brand img{width:38px;height:38px;border-radius:11px}
+.nav-links{display:flex;gap:28px;font-size:15px;color:var(--text-2)}
+.nav-links a:hover{color:var(--text)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:48px;padding:0 24px;border-radius:999px;font-weight:600;font-size:15px;border:0;cursor:pointer;transition:transform .15s,filter .15s;font-family:inherit}
+.btn:hover{transform:translateY(-1px)}
+.btn svg{width:20px;height:20px}
 .btn-primary{background:var(--accent);color:#101B32}
 .btn-primary:hover{filter:brightness(1.06)}
-.btn-ghost{background:var(--card-2);border:1px solid var(--line)}
-.btn-block{width:100%}
-.btn[disabled]{opacity:.6;pointer-events:none}
-.field{margin-bottom:14px}
-.field label{display:block;font-size:13px;color:var(--text-2);margin-bottom:6px;font-weight:500}
-.input{width:100%;height:46px;background:var(--bg);border:1.5px solid var(--line);border-radius:12px;padding:0 14px;outline:none;font-size:15px}
-.input:focus{border-color:var(--accent)}
-.alert{border-radius:12px;padding:11px 14px;font-size:13.5px;margin-bottom:14px}
-.alert.err{background:rgba(255,107,107,.12);color:var(--error)}
-.alert.ok{background:rgba(53,201,138,.12);color:var(--success)}
-.muted{color:var(--text-2)}
-.link{color:var(--accent);font-weight:500}
+.btn-ghost{background:var(--card);color:var(--text);border:1px solid var(--line)}
+.btn-sm{height:40px;padding:0 18px;font-size:14px}
+.menu-btn{display:none;background:none;border:0;color:var(--text);cursor:pointer}
 
-/* Auth */
-.auth{min-height:100%;display:grid;grid-template-columns:1fr 1fr}
-.auth-side{background:linear-gradient(150deg,#1C2B46,#0C1528);padding:56px;display:flex;flex-direction:column;justify-content:space-between;border-right:1px solid var(--line)}
-.auth-side h2{font-size:34px;line-height:1.15;margin:28px 0 14px;font-weight:800}
-.auth-side h2 span{color:var(--accent)}
-.auth-side ul{list-style:none;display:grid;gap:12px;margin-top:22px;color:#D5DDEA}
-.auth-side li{display:flex;gap:10px}
-.auth-side li svg{color:var(--success)}
-.auth-main{display:grid;place-items:center;padding:32px}
-.auth-card{width:100%;max-width:400px}
-.auth-card h1{font-size:26px;margin-bottom:6px}
-.tabs{display:flex;background:var(--card);border-radius:12px;padding:4px;margin:22px 0}
-.tabs button{flex:1;height:38px;border-radius:9px;color:var(--text-2);font-weight:600;font-size:14px}
-.tabs button.on{background:var(--accent);color:#101B32}
-.or{display:flex;align-items:center;gap:12px;color:var(--text-2);font-size:13px;margin:16px 0}
-.or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
-.gbtn{width:100%;height:46px;border-radius:12px;background:#fff;color:#1f1f1f;font-weight:600;display:flex;align-items:center;justify-content:center;gap:10px}
-.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:19px}
-.brand img{width:36px;height:36px;border-radius:10px}
-.brand small{display:block;font-size:11px;letter-spacing:1.4px;color:var(--accent);font-weight:700}
+/* HERO */
+.hero{position:relative;overflow:hidden;padding:72px 0 40px}
+.hero::before{content:"";position:absolute;width:720px;height:720px;right:-220px;top:-260px;border-radius:50%;
+  background:radial-gradient(closest-side,rgba(255,138,50,.18),transparent);pointer-events:none}
+.hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center;position:relative}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--accent);background:var(--accent-soft);padding:6px 14px;border-radius:999px;margin-bottom:20px}
+h1{font-size:clamp(34px,5vw,56px);line-height:1.1;font-weight:800;letter-spacing:-.5px}
+h1 span{color:var(--accent)}
+.lead{font-size:18px;color:var(--text-2);margin:20px 0 30px;max-width:560px}
+.cta{display:flex;gap:12px;flex-wrap:wrap}
+.trust{display:flex;gap:22px;flex-wrap:wrap;margin-top:32px;color:var(--text-2);font-size:14px}
+.trust span{display:flex;align-items:center;gap:8px}
+.trust svg{width:18px;height:18px;color:var(--success)}
+.phones{position:relative;height:560px}
+.phone{position:absolute;width:250px;border-radius:34px;padding:9px;background:#0A1222;border:1px solid #2A3C5C;box-shadow:0 30px 70px rgba(0,0,0,.45)}
+.phone img{border-radius:26px}
+.phone.p1{left:50%;top:0;transform:translateX(-30%);z-index:2}
+.phone.p2{left:0;top:70px;transform:rotate(-6deg) scale(.88);opacity:.85}
 
-/* Center card (onboarding etc.) */
-.center{min-height:100%;display:grid;place-items:center;padding:32px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:28px}
-.center .card{width:100%;max-width:480px}
+/* SECTIONS */
+section{padding:90px 0}
+.sec-head{text-align:center;max-width:680px;margin:0 auto 48px}
+.sec-head h2{font-size:clamp(28px,3.6vw,40px);line-height:1.15;font-weight:800;letter-spacing:-.3px}
+.sec-head p{color:var(--text-2);font-size:17px;margin-top:14px}
+.kicker{display:block;font-size:13px;font-weight:700;letter-spacing:1.6px;color:var(--accent);margin-bottom:12px;text-transform:uppercase}
 
-/* Shell */
-.shell{display:grid;grid-template-columns:250px 1fr;min-height:100%}
-.side{background:var(--bg-2);border-right:1px solid var(--line);padding:20px 14px;display:flex;flex-direction:column;gap:6px;position:sticky;top:0;height:100vh}
-.side .brand{padding:4px 8px 18px}
-.nav-item{display:flex;align-items:center;gap:12px;height:44px;padding:0 12px;border-radius:11px;color:var(--text-2);font-weight:500;width:100%;text-align:left}
-.nav-item:hover{background:var(--card);color:var(--text)}
-.nav-item.on{background:var(--accent-soft);color:var(--accent)}
-.nav-item .soon{margin-left:auto;font-size:10.5px;font-weight:700;color:var(--text-2);background:var(--card-2);padding:2px 7px;border-radius:999px}
-.side-foot{margin-top:auto;border-top:1px solid var(--line);padding-top:14px}
-.me{display:flex;align-items:center;gap:10px;padding:6px 8px 12px}
-.avatar{width:36px;height:36px;border-radius:50%;background:var(--card-2);display:grid;place-items:center;font-weight:700}
-.me b{display:block;font-size:14px;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.me small{color:var(--text-2);font-size:12px}
-.main{padding:28px 34px 60px;min-width:0}
-.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;gap:16px}
-.top h1{font-size:26px;font-weight:800}
-.top p{color:var(--text-2);font-size:14px}
-.menu-btn{display:none}
-.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
-.kpi{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
-.kpi small{color:var(--text-2);font-size:13px}
-.kpi b{display:block;font-size:24px;margin-top:6px}
-.empty{text-align:center;padding:40px 20px}
-.empty .ic{width:60px;height:60px;border-radius:18px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;margin:0 auto 14px}
-.empty .ic svg{width:28px;height:28px}
-.empty h3{font-size:17px;margin-bottom:6px}
-.empty p{color:var(--text-2);max-width:420px;margin:0 auto}
-.code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:30px;font-weight:800;letter-spacing:6px;color:var(--accent);background:var(--bg);border:1px dashed var(--line);border-radius:14px;padding:14px 20px;display:inline-block}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.tbl{width:100%;border-collapse:collapse;font-size:14px}
-.tbl th{text-align:left;color:var(--text-2);font-weight:500;padding:10px 8px;border-bottom:1px solid var(--line)}
-.tbl td{padding:12px 8px;border-bottom:1px solid rgba(42,60,92,.6)}
-.role{font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--card-2);color:var(--text-2)}
-.role.owner{background:var(--accent-soft);color:var(--accent)}
-.role.driver{background:rgba(53,201,138,.12);color:var(--success)}
-.steps{counter-reset:s;list-style:none;display:grid;gap:10px;margin-top:14px}
-.steps li{display:flex;gap:12px;color:#D5DDEA;font-size:14px}
-.steps li::before{counter-increment:s;content:counter(s);width:24px;height:24px;border-radius:50%;background:var(--card-2);display:grid;place-items:center;font-size:12px;font-weight:700;flex-shrink:0}
-.toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,20px);background:#1E5A47;color:#fff;padding:12px 18px;border-radius:12px;opacity:0;transition:.25s;pointer-events:none;z-index:50;font-size:14px}
-.toast.show{opacity:1;transform:translate(-50%,0)}
-.toast.err{background:#5A1E2A}
-.spinner{width:34px;height:34px;border:3px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto}
-@keyframes spin{to{transform:rotate(360deg)}}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.feature{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:26px}
+.feature .fi{width:48px;height:48px;border-radius:14px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;margin-bottom:16px}
+.feature h3{font-size:18px;font-weight:700;margin-bottom:8px}
+.feature p{color:var(--text-2);font-size:15px}
 
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;counter-reset:s}
+.step{position:relative;padding:28px;border-radius:20px;background:linear-gradient(160deg,#1C2B46,#16233D);border:1px solid var(--line)}
+.step::before{counter-increment:s;content:counter(s);display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:var(--accent);color:#101B32;font-weight:800;margin-bottom:16px}
+.step h3{font-size:18px;margin-bottom:6px}
+.step p{color:var(--text-2);font-size:15px}
 
-/* Araçlar */
-.toolbar{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px}
-.search{position:relative;flex:1;min-width:220px;max-width:380px}
-.search svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--text-2)}
-.search .input{padding-left:40px;height:44px}
-.tb-actions{display:flex;gap:10px;flex-wrap:wrap}
-.vt td{vertical-align:middle}
-.vt th:first-child,.vt td:first-child{padding-left:18px}
-.num{text-align:right;white-space:nowrap}
-.plate{display:inline-flex;background:#fff;color:#111;border-radius:6px;font-weight:700;font-size:13px;letter-spacing:.6px;overflow:hidden;border:1.5px solid #111;height:26px;white-space:nowrap}
-.plate i{font-style:normal;background:#1A4BB5;color:#fff;font-size:8px;padding:0 4px;display:grid;place-items:center}
-.plate b{padding:0 7px;display:grid;place-items:center}
-.sel{height:38px;font-size:13.5px;padding:0 10px;min-width:160px;max-width:220px}
-.acts{white-space:nowrap;text-align:right;padding-right:14px!important}
-.icon{width:36px;height:36px;border-radius:10px;display:inline-grid;place-items:center;color:var(--text-2)}
-.icon:hover{background:var(--card-2);color:var(--text)}
-.icon.danger:hover{color:var(--error)}
-.tfoot{padding:12px 18px;font-size:13px;color:var(--text-2);border-top:1px solid var(--line)}
-.btn-danger{background:rgba(255,107,107,.14);color:var(--error)}
-.modal-wrap{position:fixed;inset:0;background:rgba(5,10,22,.65);z-index:40;display:grid;place-items:center;padding:20px;overflow:auto}
-.modal{background:#16233D;border:1px solid var(--line);border-radius:18px;padding:24px;width:100%;max-width:560px;box-shadow:0 30px 80px rgba(0,0,0,.5)}
-.modal.wide{max-width:860px}
-.m-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
-.m-head h3{font-size:19px}
-.m-foot{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
-.field .msg{display:none;color:var(--error);font-size:12.5px;margin-top:5px}
-.field.err .input{border-color:var(--error)}
-.field.err .msg{display:block}
-.drop{display:flex;flex-direction:column;align-items:center;gap:6px;border:2px dashed var(--line);border-radius:14px;padding:26px;cursor:pointer;text-align:center}
-.drop:hover,.drop.over{border-color:var(--accent);background:var(--accent-soft)}
-.drop svg{width:28px;height:28px;color:var(--accent)}
-.sum{display:flex;gap:8px;margin:18px 0 10px;flex-wrap:wrap}
-.pill{font-size:12.5px;font-weight:700;padding:5px 12px;border-radius:999px}
+.shots{display:flex;justify-content:center;gap:26px;flex-wrap:wrap}
+.shot{width:260px;text-align:center}
+.shot .phone{position:static;width:100%;transform:none}
+.shot p{margin-top:14px;color:var(--text-2);font-size:14px}
+
+/* BUSINESS */
+.biz{background:var(--bg-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.biz .wrap{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+.biz h2{font-size:clamp(28px,3.6vw,40px);line-height:1.15;font-weight:800}
+.biz .lead{margin:16px 0 26px}
+.checks{list-style:none;display:grid;gap:14px;margin-bottom:30px}
+.checks li{display:flex;gap:12px;align-items:flex-start;color:#D5DDEA}
+.checks svg{color:var(--success);margin-top:2px;width:22px;height:22px}
+.badge{display:inline-block;font-size:12px;font-weight:700;padding:5px 12px;border-radius:999px;background:rgba(53,201,138,.14);color:var(--success);margin-bottom:16px;letter-spacing:.3px}
+.dash{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:0 30px 70px rgba(0,0,0,.35)}
+.dash-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.dash-top b{font-size:16px}
+.dash-top span{font-size:12px;color:var(--text-2);background:var(--card-2);padding:5px 10px;border-radius:999px}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.kpi{background:var(--card-2);border-radius:14px;padding:14px}
+.kpi small{color:var(--text-2);font-size:12px;display:block}
+.kpi b{font-size:20px}
+.tbl{width:100%;border-collapse:collapse;font-size:13.5px}
+.tbl th{text-align:left;color:var(--text-2);font-weight:500;padding:8px 6px;border-bottom:1px solid var(--line)}
+.tbl td{padding:10px 6px;border-bottom:1px solid rgba(42,60,92,.6)}
+.tbl td:last-child,.tbl th:last-child{text-align:right}
+.pill{font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px}
 .pill.ok{background:rgba(53,201,138,.14);color:var(--success)}
-.pill.bad{background:rgba(255,107,107,.14);color:var(--error)}
-.prev{max-height:320px;overflow:auto;border:1px solid var(--line);border-radius:12px}
-.prev .tbl th{position:sticky;top:0;background:#16233D}
-.prev tr.bad td{background:rgba(255,107,107,.05)}
-.okc{color:var(--success)}
-.errc{color:var(--error);font-size:12.5px}
-@media (max-width:900px){
-  .hm{display:none}
-  .g2{grid-template-columns:1fr}
-  .toolbar .search{max-width:none}
-  .tb-actions .btn{flex:1}
-  .modal{padding:18px}
-}
+.pill.soon{background:var(--accent-soft);color:var(--accent)}
+.pill.late{background:rgba(255,107,107,.14);color:#FF6B6B}
+.dash-note{font-size:12px;color:var(--text-2);margin-top:12px;text-align:center}
 
-@media (max-width:900px){
-  .auth{grid-template-columns:1fr}
-  .auth-side{display:none}
-  .shell{grid-template-columns:1fr}
-  .side{position:fixed;left:0;top:0;bottom:0;width:260px;z-index:30;transform:translateX(-100%);transition:transform .2s}
-  .side.open{transform:none;box-shadow:0 0 0 100vmax rgba(0,0,0,.5)}
-  .menu-btn{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:var(--card)}
-  .main{padding:20px 16px 60px}
-  .kpis{grid-template-columns:1fr 1fr}
-  .grid2{grid-template-columns:1fr}
-  .top h1{font-size:22px}
+/* PRICING */
+.prices{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:stretch}
+.price{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:30px;display:flex;flex-direction:column}
+.price.hl{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset;position:relative}
+.price.hl::after{content:"Önerilen";position:absolute;top:-12px;right:24px;background:var(--accent);color:#101B32;font-size:12px;font-weight:700;padding:4px 12px;border-radius:999px}
+.price h3{font-size:20px}
+.price .for{color:var(--text-2);font-size:14px;margin:4px 0 18px}
+.price .amt{font-size:28px;font-weight:800;margin-bottom:20px}
+.price .amt small{font-size:14px;color:var(--text-2);font-weight:500}
+.price ul{list-style:none;display:grid;gap:11px;margin-bottom:26px;flex:1}
+.price li{display:flex;gap:10px;font-size:15px;color:#D5DDEA}
+.price li svg{width:20px;height:20px;color:var(--success)}
+
+/* FAQ */
+.faq{max-width:780px;margin:0 auto;display:grid;gap:12px}
+details{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 22px}
+summary{cursor:pointer;font-weight:600;font-size:16px;list-style:none;display:flex;justify-content:space-between;gap:14px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--accent);font-size:22px;line-height:1}
+details[open] summary::after{content:"–"}
+details p{color:var(--text-2);margin-top:12px;font-size:15px}
+
+/* CONTACT */
+.contact .wrap{display:grid;grid-template-columns:.9fr 1.1fr;gap:48px;align-items:start}
+.contact h2{font-size:clamp(28px,3.6vw,40px);font-weight:800;line-height:1.15}
+form{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:28px;display:grid;gap:16px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+label{display:block;font-size:13px;color:var(--text-2);margin-bottom:7px;font-weight:500}
+input,select,textarea{width:100%;background:var(--bg);border:1.5px solid var(--line);border-radius:12px;color:var(--text);font:inherit;font-size:15px;padding:12px 14px;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+textarea{min-height:90px;resize:vertical}
+.err{color:#FF6B6B;font-size:12.5px;margin-top:6px;display:none}
+.f.bad input,.f.bad select{border-color:#FF6B6B}
+.f.bad .err{display:block}
+.small{font-size:12.5px;color:var(--text-2)}
+.small a{color:var(--accent)}
+.ok-box{display:none;background:rgba(53,201,138,.12);color:var(--success);border-radius:12px;padding:12px 14px;font-size:14px}
+
+/* FOOTER */
+footer{border-top:1px solid var(--line);padding:40px 0;color:var(--text-2);font-size:14px}
+footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:center}
+footer nav{display:flex;gap:22px;flex-wrap:wrap}
+footer a:hover{color:var(--text)}
+
+/* RESPONSIVE */
+@media (max-width:960px){
+  .hero .wrap,.biz .wrap,.contact .wrap{grid-template-columns:1fr}
+  .phones{height:520px;max-width:420px;margin:0 auto;width:100%}
+  .grid3,.steps,.prices{grid-template-columns:1fr 1fr}
+}
+@media (max-width:720px){
+  .nav-links{display:none;position:absolute;top:70px;left:0;right:0;flex-direction:column;gap:0;background:var(--bg);border-bottom:1px solid var(--line)}
+  .nav-links.open{display:flex}
+  .nav-links a{padding:16px 24px;border-top:1px solid var(--line)}
+  .menu-btn{display:block}
+  .nav .btn{display:none}
+  section{padding:64px 0}
+  .hero{padding:44px 0 20px}
+  .grid3,.steps,.prices,.row2,.kpis{grid-template-columns:1fr}
+  .kpis{grid-template-columns:1fr 1fr 1fr}
+  .phones{height:470px}
+  .phone{width:215px}
+  .phone.p2{display:none}
+  .phone.p1{left:50%;transform:translateX(-50%)}
+  .tbl .hide-m{display:none}
 }
 </style>
 </head>
 <body>
-<div id="root"><div class="center"><div class="spinner"></div></div></div>
-<div class="toast" id="toast"></div>
-<script type="module" src="app.js"></script>
+
+<header class="nav">
+  <div class="wrap">
+    <a href="#" class="brand"><img src="assets/logo.png" alt="Driventa logosu">Driventa</a>
+    <nav class="nav-links" id="navLinks">
+      <a href="#ozellikler">Özellikler</a>
+      <a href="#isletmeler">İşletmeler</a>
+      <a href="#paketler">Paketler</a>
+      <a href="#sss">SSS</a>
+    </nav>
+    <a href="#iletisim" class="btn btn-primary btn-sm">Demo İste</a>
+    <button class="menu-btn" id="menuBtn" aria-label="Menü"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
+</header>
+
+<main>
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow">🇹🇷 Türkiye'deki araç sahipleri ve filolar için</span>
+      <h1>Aracının tüm masrafları, <span>tek ekranda.</span></h1>
+      <p class="lead">Yakıt, bakım, sigorta, muayene, MTV, HGS… Driventa her kuruşu kaydeder, gerçek yakıt tüketimini hesaplar ve bakım zamanı geldiğinde seni uyarır.</p>
+      <div class="cta">
+        <a href="#indir" class="btn btn-primary"><svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>Google Play'de yakında</a>
+        <a href="#isletmeler" class="btn btn-ghost">İşletmeler için</a>
+      </div>
+      <div class="trust">
+        <span><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg>İnternetsiz çalışır</span>
+        <span><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg>Veriler telefonunda kalır</span>
+        <span><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg>Tamamen Türkçe</span>
+      </div>
+    </div>
+    <div class="phones" aria-hidden="true">
+      <div class="phone p2"><img src="assets/reports.webp" alt=""></div>
+      <div class="phone p1"><img src="assets/home.webp" alt="Driventa ana ekranı"></div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="ozellikler">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">Özellikler</span>
+      <h2>Aracın hakkında bilmen gereken her şey</h2>
+      <p>Fiş biriktirmeye, Excel tutmaya, bakım tarihini unutmaya son.</p>
+    </div>
+    <div class="grid3">
+      <div class="feature"><div class="fi"><svg viewBox="0 0 24 24"><path d="M4 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16M3 21h12M4 10h10"/><path d="M14 8h2a2 2 0 0 1 2 2v6a1.5 1.5 0 0 0 3 0V8l-3-3"/></svg></div>
+        <h3>Gerçek yakıt tüketimi</h3><p>İki tam depo arasındaki gerçek L/100 km değerini hesaplar. Tahmin yok; eksik veri varsa söyler.</p></div>
+      <div class="feature"><div class="fi"><svg viewBox="0 0 24 24"><path d="M14.5 6.5a4 4 0 0 1 5.4-3.7l-2.6 2.6.8 2 2 .8 2.6-2.6a4 4 0 0 1-5.4 5.4L8.5 19.8a2 2 0 0 1-2.8-2.8l8.8-8.8a4 4 0 0 1 0-1.7z"/></svg></div>
+        <h3>Akıllı bakım planı</h3><p>Yağ, filtre, balata, triger… Km veya süreye göre takip; servise gittiğinde paketi tek dokunuşla sıfırla.</p></div>
+      <div class="feature"><div class="fi"><svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></div>
+        <h3>Hatırlatmalar</h3><p>Kasko, trafik sigortası, muayene ve bakım zamanı yaklaşınca telefonuna bildirim gelir.</p></div>
+      <div class="feature"><div class="fi"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></div>
+        <h3>Anlaşılır raporlar</h3><p>Aylık ve yıllık masraf, gider dağılımı, km başına maliyet ve araç karşılaştırması grafiklerle.</p></div>
+      <div class="feature"><div class="fi"><svg viewBox="0 0 24 24"><path d="M5 17h14M3 13l2-5.5A2 2 0 0 1 6.9 6h10.2a2 2 0 0 1 1.9 1.5L21 13v4a1 1 0 0 1-1 1h-1.5a1 1 0 0 1-1-1v-1h-11v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M3 13h18"/></svg></div>
+        <h3>Otomobil, motosiklet, ticari</h3><p>Tüm araç türleri; benzin, dizel, LPG, hibrit ve elektrikli (kWh) desteğiyle.</p></div>
+      <div class="feature"><div class="fi"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
+        <h3>Gizlilik önce gelir</h3><p>Hesap açman gerekmez. Bireysel kullanımda verilerin yalnızca telefonunda durur; yedeğini sen alırsın.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW -->
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">Nasıl çalışır?</span>
+      <h2>Üç adımda kontrol sende</h2>
+    </div>
+    <div class="steps">
+      <div class="step"><h3>Aracını ekle</h3><p>Marka, model, plaka ve kilometre. 30 saniye sürer.</p></div>
+      <div class="step"><h3>Masraflarını kaydet</h3><p>Yakıt fişinde litre ve fiyatı yaz; toplamı Driventa hesaplasın.</p></div>
+      <div class="step"><h3>Gör ve planla</h3><p>Nereye ne harcadığını gör, bakımı ve sigortayı asla kaçırma.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- SCREENSHOTS -->
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="shots">
+      <div class="shot"><div class="phone"><img src="assets/home.webp" alt="Ana ekran" loading="lazy"></div><p>Ana ekran: bu ayın özeti ve hatırlatmalar</p></div>
+      <div class="shot"><div class="phone"><img src="assets/reports.webp" alt="Raporlar" loading="lazy"></div><p>Raporlar: L/100 km ve km başı maliyet</p></div>
+      <div class="shot"><div class="phone"><img src="assets/maint.webp" alt="Bakım planı" loading="lazy"></div><p>Bakım planı: ne zaman, kaç km kaldı</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- BUSINESS -->
+<section class="biz" id="isletmeler">
+  <div class="wrap">
+    <div>
+      <span class="badge">ERKEN ERİŞİM</span>
+      <h2>Driventa İşletme ile filonu tek panelden yönet</h2>
+      <p class="lead">Şoförlerin yakıtı ve masrafı telefondan girer, sen tüm filoyu web panelinden anlık görürsün. Excel tablolarına ve kayıp fişlere son.</p>
+      <ul class="checks">
+        <li><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg><span><b>Şoför uygulaması:</b> Her şoför kendi aracına fiş, yakıt ve kilometre girer.</span></li>
+        <li><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg><span><b>Yönetici paneli:</b> Araç bazlı maliyet, km başı gider, tüketim ve şoför karşılaştırması.</span></li>
+        <li><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg><span><b>Filo bakım takvimi:</b> Hangi aracın bakımı, sigortası, muayenesi yaklaşıyor; tek listede.</span></li>
+        <li><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg><span><b>Excel ile içe/dışa aktarım:</b> Mevcut araç listeni yükle, raporlarını muhasebeye gönder.</span></li>
+      </ul>
+      <a href="#iletisim" class="btn btn-primary">Erken erişim için başvur</a>
+    </div>
+    <div class="dash" aria-label="Filo paneli önizlemesi">
+      <div class="dash-top"><b>Filo Özeti · Kasım</b><span>Örnek görünüm</span></div>
+      <div class="kpis">
+        <div class="kpi"><small>Araç</small><b>18</b></div>
+        <div class="kpi"><small>Aylık masraf</small><b>₺214.300</b></div>
+        <div class="kpi"><small>Km başı</small><b>₺4,82</b></div>
+      </div>
+      <table class="tbl">
+        <thead><tr><th>Plaka</th><th class="hide-m">Şoför</th><th>Durum</th><th>Bu ay</th></tr></thead>
+        <tbody>
+          <tr><td>34 BSY 101</td><td class="hide-m">A. Yılmaz</td><td><span class="pill late">Bakım geçti</span></td><td>₺18.450</td></tr>
+          <tr><td>34 BSY 117</td><td class="hide-m">M. Kaya</td><td><span class="pill soon">Kasko 12 gün</span></td><td>₺15.920</td></tr>
+          <tr><td>06 BSY 41</td><td class="hide-m">S. Demir</td><td><span class="pill ok">İyi durumda</span></td><td>₺12.300</td></tr>
+          <tr><td>35 BSY 208</td><td class="hide-m">E. Çelik</td><td><span class="pill ok">İyi durumda</span></td><td>₺11.780</td></tr>
+        </tbody>
+      </table>
+      <p class="dash-note">Temsilî görünümdür; değerler örnektir.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="paketler">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">Paketler</span>
+      <h2>İhtiyacına göre seç</h2>
+      <p>Ücretsiz başla; büyüdükçe yükselt.</p>
+    </div>
+    <div class="prices">
+      <div class="price">
+        <h3>Ücretsiz</h3><p class="for">Tek aracı olanlar için</p>
+        <div class="amt">₺0</div>
+        <ul>
+          <li><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg>1 araç</li>
+          <li><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg>Tüm kayıt türleri ve raporlar</li>
+          <li><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg>Sınırsız bakım hatırlatması</li>
+          <li><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg>Yerel yedekleme</li>
+        </ul>
+        <a href="#indir" class="btn btn-ghost">Yakında</a>
+      </div>
+      <div class="price hl">
+        <h3>Premium</h3><p class="for">Birden fazla aracı olanlar için</p>
+        <div class="amt">Yakında <small>/ aylık veya yıllık</small></div>
+        <ul>
+          <li><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg>Sınırsız araç</li>
+          <li><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg>Reklamsız kullanım</li>
+          <li><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg>PDF ve Excel rapor</li>
+          <li><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg>Bulut yedekleme</li>
+        </ul>
+        <a href="#indir" class="btn btn-primary">Yakında</a>
+      </div>
+      <div class="price">
+        <h3>İşletme</h3><p class="for">Filolar ve şirketler için</p>
+        <div class="amt">Teklif alın <small>/ araç başı</small></div>
+        <ul>
+          <li><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg>Web yönetim paneli</li>
+          <li><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg>Şoför ve yönetici hesapları</li>
+          <li><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg>Filo raporları ve bakım takvimi</li>
+          <li><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg>Excel içe/dışa aktarım</li>
+        </ul>
+        <a href="#iletisim" class="btn btn-ghost">Demo iste</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="sss" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head"><span class="kicker">SSS</span><h2>Sık sorulan sorular</h2></div>
+    <div class="faq">
+      <details><summary>Driventa ücretli mi?</summary><p>Tek araç için tüm temel özellikler ücretsizdir. Birden fazla araç, reklamsız kullanım ve gelişmiş çıktılar için Premium, şirketler için İşletme paketi sunulacaktır.</p></details>
+      <details><summary>İnternet olmadan çalışıyor mu?</summary><p>Evet. Bireysel uygulama tamamen çevrimdışı çalışır; kayıtların telefonunda saklanır.</p></details>
+      <details><summary>Verilerim nerede saklanıyor?</summary><p>Bireysel kullanımda yalnızca kendi telefonunda. İşletme paketinde, ekibinin verilere ortak erişebilmesi için veriler güvenli bulut sunucularında tutulur; ayrıntılar gizlilik politikamızda yer alır.</p></details>
+      <details><summary>Yakıt tüketimi nasıl hesaplanıyor?</summary><p>İki "tam depo" kaydı arasında alınan toplam yakıt, gidilen kilometreye bölünür. Yeterli veri yoksa tahmini bir sayı göstermeyiz, eksik olanı söyleriz.</p></details>
+      <details><summary>Ne zaman kullanabilirim?</summary><p>Android uygulaması yakında Google Play'de. İşletme paketi için erken erişim başvurularını şimdiden alıyoruz.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="iletisim">
+  <div class="wrap">
+    <div id="indir">
+      <span class="kicker">İletişim</span>
+      <h2>Filon için demo iste</h2>
+      <p class="lead">Araç sayını ve ihtiyacını yaz; erken erişim ve fiyatlandırma için seninle iletişime geçelim.</p>
+      <p class="small">Doğrudan e-posta: <a href="mailto:beseygames@gmail.com">beseygames@gmail.com</a></p>
+    </div>
+    <form id="demoForm" novalidate>
+      <div class="row2">
+        <div class="f" data-f="ad"><label for="ad">Ad soyad *</label><input id="ad" name="ad" autocomplete="name" maxlength="60"><div class="err">Ad soyad gerekli.</div></div>
+        <div class="f" data-f="sirket"><label for="sirket">Şirket</label><input id="sirket" name="sirket" autocomplete="organization" maxlength="80"></div>
+      </div>
+      <div class="row2">
+        <div class="f" data-f="eposta"><label for="eposta">E-posta *</label><input id="eposta" name="eposta" type="email" autocomplete="email" maxlength="80"><div class="err">Geçerli bir e-posta girin.</div></div>
+        <div class="f" data-f="arac"><label for="arac">Araç sayısı *</label>
+          <select id="arac" name="arac"><option value="">Seçin</option><option>1–5</option><option>6–20</option><option>21–50</option><option>51–200</option><option>200+</option></select><div class="err">Araç sayısını seçin.</div></div>
+      </div>
+      <div class="f"><label for="not">Mesajın</label><textarea id="not" name="not" maxlength="600" placeholder="Örn. 12 ticari aracımız var, yakıt fişlerini şoförlerin girmesini istiyoruz."></textarea></div>
+      <p class="small">Gönder'e bastığında e-posta uygulaman bu bilgilerle açılır. Bilgilerin yalnızca seninle iletişim kurmak için kullanılır. <a href="gizlilik.html">Gizlilik politikası</a></p>
+      <button class="btn btn-primary" type="submit">Gönder</button>
+      <div class="ok-box" id="okBox">E-posta uygulaman açıldı. Açılmadıysa bize doğrudan beseygames@gmail.com adresinden yazabilirsin.</div>
+    </form>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="brand" style="font-size:16px"><img src="assets/logo.png" alt="" style="width:30px;height:30px;border-radius:9px">Driventa <span style="font-weight:400;color:var(--text-2);font-size:14px">· BeSey</span></div>
+    <nav>
+      <a href="gizlilik.html">Gizlilik Politikası</a>
+      <a href="kullanim-kosullari.html">Kullanım Koşulları</a>
+      <a href="mailto:beseygames@gmail.com">İletişim</a>
+    </nav>
+    <div>© <span id="yr"></span> BeSey. Tüm hakları saklıdır.</div>
+  </div>
+</footer>
+
+<script>
+document.getElementById('yr').textContent=new Date().getFullYear();
+// Mobil menü
+const links=document.getElementById('navLinks');
+document.getElementById('menuBtn').addEventListener('click',()=>links.classList.toggle('open'));
+links.addEventListener('click',e=>{ if(e.target.tagName==='A') links.classList.remove('open'); });
+
+// Demo formu: sunucu kullanmadan e-posta uygulamasını açar
+const form=document.getElementById('demoForm');
+form.addEventListener('submit',e=>{
+  e.preventDefault();
+  const v=n=>form[n].value.trim();
+  const bad={ad:!v('ad'),eposta:!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v('eposta')),arac:!v('arac')};
+  Object.entries(bad).forEach(([k,b])=>form.querySelector(`[data-f="${k}"]`).classList.toggle('bad',b));
+  if(Object.values(bad).some(Boolean)) return;
+  const body=`Ad soyad: ${v('ad')}\nŞirket: ${v('sirket')||'-'}\nE-posta: ${v('eposta')}\nAraç sayısı: ${v('arac')}\n\n${v('not')}`;
+  location.href=`mailto:beseygames@gmail.com?subject=${encodeURIComponent('Driventa İşletme demo talebi')}&body=${encodeURIComponent(body)}`;
+  document.getElementById('okBox').style.display='block';
+});
+form.addEventListener('input',e=>{ const f=e.target.closest('.f'); if(f) f.classList.remove('bad'); });
+</script>
 </body>
 </html>
